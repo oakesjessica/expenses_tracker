@@ -64,3 +64,12 @@ CREATE TABLE transactions (
 	category_id INT REFERENCES user_categories(id),
 	t_type_id INT REFERENCES transaction_type(id)
 );
+
+INSERT INTO transaction_type (type_name) VALUES
+('credit'),
+('debit'),
+('cash'),
+('cc payment'),
+('income'),
+('bill'),
+('loans');
