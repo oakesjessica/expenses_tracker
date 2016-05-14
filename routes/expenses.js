@@ -8,15 +8,7 @@ router.get("/", function(req, res) {
   }); //  pg.connect
 }); //  router.get
 
-/**
-* Posting layout
-* 1) Insert user's category into user_categories table
-* 2) Select transaction type ID and user_categories ID
-* 3) Insert into transactions with information and ID's (user, transaction type, category)
-* 4) Update cash, checking,
-*/
 router.post("/", function(req, res) {
-  //
   var userID = 1;
   pg.connect(connection, function(err, client, done) {
     if (err) {
@@ -29,7 +21,7 @@ router.post("/", function(req, res) {
         if(err) {
           console.log("Posting category !ERROR!", err);
           res.status(500).send(err);
-          process.exit(1);
+          process.exit(1); //disconnect from db
         } else {
           client.query("SELECT tt.id AS tt_id, uc.id AS cat_id " +
           "FROM transaction_type AS tt, user_categories AS uc " +
@@ -40,7 +32,7 @@ router.post("/", function(req, res) {
               process.exit(1);
             } else {
               client.query("INSERT INTO transactions (wherewhat, amount, user_id, category_id, t_type_id, dates) VALUES " +
-              "($1, $2, $3, $4, $5, $6);", [req.body.wherewhat, req.body.amount, userID, req.body.result.rows[0].tt_id, req.body.result.rows[1].cat_id, req.body.date], function(err, result) {
+              "($1, $2, $3, $4, $5, $6);", [req.body.wherewhat, req.body.amount, userID, req.body.result.rows[0], req.body.result.rows[1], req.body.date], function(err, result) {
                 if (err) {
                   console.log("Inserting into transactions !ERROR!", err);
                   res.status(500).send(err);
@@ -56,7 +48,6 @@ router.post("/", function(req, res) {
     }
   });
 });
-
 /**
   * This function will add the amount from
   * the totals and monthly amounts to the credit, debt, and loans table
