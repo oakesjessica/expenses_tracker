@@ -1,4 +1,29 @@
 {
+<<<<<<< HEAD
+  "name": "expenses_tracker",
+  "version": "1.0.0",
+  "description": "Expenses Tracker Project: Hack the Gap 2016",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/oakesjessica/expenses_tracker.git"
+  },
+  "keywords": [],
+  "author": "Katie, Jessica, Moni, Paola, Susan",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/oakesjessica/expenses_tracker/issues"
+  },
+  "homepage": "https://github.com/oakesjessica/expenses_tracker#readme",
+  "dependencies": {
+    "body-parser": "^1.15.1",
+    "bootstrap": "^3.3.6",
+    "express": "^4.13.4",
+    "jquery": "^2.2.3",
+=======
   "name": "expense_tracker",
   "version": "1.0.0",
   "description": "",
@@ -15,6 +40,7 @@
     "body-parser": "^1.15.1",
     "express": "^4.13.4",
     "mobile-angular-ui": "^1.2.1",
+>>>>>>> f39af15cddbcf1876c52c17ad91f01f2a3e7087a
     "pg": "^4.5.5"
   }
 }
