@@ -19,8 +19,7 @@ app.get('/index', function(req, res) {
 app.get('/table', function(req, res) {
   //load table for specific user
   //find user id ... fetch resources
-  res.render('users/table')
-  console.log('Accessing the table ...');
+  // res.render('users/table')
 });
 
 app.post('/table', function(req, res) {

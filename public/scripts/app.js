@@ -1,4 +1,4 @@
-var myApp = angular.module('myApp', ['ngRoute', 'mobile-angular-ui', 'ngTagsInput']);
+var myApp = angular.module('myApp', ['ngRoute', 'mobile-angular-ui']);
 
 myApp.config(['$routeProvider', function($routeProvider) {
 
