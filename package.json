@@ -24,8 +24,8 @@
     "body-parser": "^1.15.1",
     "bootstrap": "^3.3.6",
     "express": "^4.13.4",
-    "mobile-angular-ui": "^1.2.1",
     "jquery": "^2.2.3",
+    "mobile-angular-ui": "^1.2.1",
     "pg": "^4.5.5"
   }
 }
