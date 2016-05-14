@@ -11,3 +11,30 @@ app.use(bodyParser.urlencoded({extended: true}));
 
 
 module.exports = router;
+
+
+app.get('/', function(req, res) {
+  res.send('hello world');
+});
+
+app.get('/table', function(req, res) {
+  //load table for specific user
+  //find user id ... fetch resources
+  res.render('users/table')
+});
+
+app.post('/table', function(req, res) {
+  //add data to database
+});
+/**
+ * a home page route
+ */
+  app.get('/signup', function(req, res) {
+      // any logic goes here
+      res.render('users/signup')
+  });
+
+  app.get('/login', function(req, res) {
+      // any logic goes here
+      res.render('users/login')
+  });
