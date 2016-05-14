@@ -1,3 +1,57 @@
-<div>
-    <h3>Some text goes here</h3>
-</div>
+
+
+
+		<div id ="content_location">
+
+			<div id ="container">
+				<div class = "row">
+					<div class = "col-md-3" id = "savingsTotal"> <h1>Savings</h1> <br> <h3>Test<h3> </div>
+					<div class = "col-md-3" id = "checkingTotal"> <h1>Checking</h1> <br> <h3>Test<h3> </div>
+					<div class = "col-md-3" id = "cashTotal"> <h1>Cash</h1> <br> <h3>Test<h3> </div>
+					<div class = "col-md-3" id = "debtTotal"> <h1>Debt</h1> <br> <h3>Test<h3> </div>
+				</div>
+			</div>
+
+			<div id ="transactiongForm">
+				<form>
+          <label for = "date">Date:</label>
+					<input ng-model ="" type="date" name = "date">
+
+          <label for = "location">Location:</label>
+					<input ng-model ="" type ="text" name = "location">
+
+          <label for = "category">Category:</label>
+				 	<input ng-model ="" type = "text" name = "category">
+
+          <label for = "amount"> Amount:</label>
+          <input ng-model ="" type ="number" name = "amount">
+
+          <label for = "transactionType">Transaction Type:</lable>
+					<input ng-model ="" type ="text" name = "transactionType">
+
+					<input ng-model ="" type ="submit" name ="submit">
+				</form>
+			</div>
+
+			<div id ="mainTable">
+				<table>
+					<tr>
+						<th class = "col-lg-1 col-md-1 col-sm-1">Date</th>
+						<th class = "col-lg-3 col-md-3 col-sm-3">Location</th>
+						<th class = "col-lg-3 col-md-3 col-sm-3">Category</th>
+            <th class = "col-lg-3 col-md-3 col-sm-3">Transaction Type</th>
+						<th class = "col-lg-1 col-md-1 col-sm-1">Amount</th>
+						<th class = "col-lg-1 col-md-1 col-sm-1">Delete</th>
+					</tr>
+					<tr ng-repeat = "x in transactions">
+						<td class = "col-lg-1 col-md-1 col-sm-1"> {{x.date}} </td>
+						<td class = "col-lg-3 col-md-3 col-sm-3"> {{x.location}} </td>
+						<td class = "col-lg-3 col-md-3 col-sm-3"> {{x.category}} </td>
+						<td class = "col-lg-3 col-md-3 col-sm-3"> {{x.transaction}} </td>
+            <td class = "col-lg-1 col-md-1 col-sm-1"> {{x.amount}} </td>
+						<td class = "col-lg-1 col-md-1 col-sm-1"><button type ="button">"X"</button></td>
+					</tr>
+				</table>
+			</div>
+
+		</div>
