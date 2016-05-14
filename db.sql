@@ -7,7 +7,7 @@ CREATE TABLE users (
 
 CREATE TABLE transaction_type (
 	id serial PRIMARY KEY,
-	transaction_type varchar
+	type_name varchar
 );
 
 CREATE TABLE user_categories (
@@ -57,9 +57,10 @@ CREATE TABLE credit (
 
 CREATE TABLE transactions (
 	id serial PRIMARY KEY,
+	dates date,
 	wherewhat varchar,
 	amount NUMERIC,
 	user_id INT REFERENCES users(id),
 	category_id INT REFERENCES user_categories(id),
-	transaction_id INT REFERENCES transaction_type(id)
+	t_type_id INT REFERENCES transaction_type(id)
 );
