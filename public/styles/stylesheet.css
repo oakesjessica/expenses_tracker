@@ -6,3 +6,24 @@ th, td {
     padding: 5px;
     text-align: left;
 }
+.secondHeader {
+  text-align: center;
+}
+#mainContainer {
+  padding: 20px;
+}
+#mainTable {
+  padding: 20px;
+}
+#transactionForm {
+  padding: 20px;
+}
+.headerOne {
+  font-size: 50px;
+
+}
+.headerTwo {
+  font-size: 30px;
+
+
+}
