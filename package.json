@@ -1,0 +1,20 @@
+{
+  "name": "expense_tracker",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js"
+  },
+  "author": "Jessica, Katie, Moni, Paola",
+  "license": "ISC",
+  "dependencies": {
+    "angular": "^1.5.5",
+    "angular-route": "^1.5.5",
+    "body-parser": "^1.15.1",
+    "express": "^4.13.4",
+    "mobile-angular-ui": "^1.2.1",
+    "pg": "^4.5.5"
+  }
+}
