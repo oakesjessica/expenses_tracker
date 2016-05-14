@@ -66,10 +66,22 @@ CREATE TABLE transactions (
 );
 
 INSERT INTO transaction_type (type_name) VALUES
-('credit'),
-('debit'),
-('cash'),
-('cc payment'),
 ('income'),
-('bill'),
-('loans');
+('cash gift (income)'),
+('checking gift (income)'),
+('cash expense'),
+('credit expense'),
+('debit expense'),
+('loans'),
+('bill payment (cc)'),
+('bill payment (checking)'),
+('loan payment (cc)'),
+('loan payment (cash)'),
+('loan payment (checking)'),
+('cc payment (checking)'),
+('savings to checking transfer'),
+('checking to savings transfer'),
+('checking - cash deposit'),
+('checking withdrawl from checking'),
+('cash check'),
+('bill');
