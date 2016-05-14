@@ -1,11 +1,11 @@
 {
-<<<<<<< HEAD
   "name": "expenses_tracker",
   "version": "1.0.0",
   "description": "Expenses Tracker Project: Hack the Gap 2016",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js"
   },
   "repository": {
     "type": "git",
@@ -19,28 +19,13 @@
   },
   "homepage": "https://github.com/oakesjessica/expenses_tracker#readme",
   "dependencies": {
-    "body-parser": "^1.15.1",
-    "bootstrap": "^3.3.6",
-    "express": "^4.13.4",
-    "jquery": "^2.2.3",
-=======
-  "name": "expense_tracker",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node app.js"
-  },
-  "author": "Jessica, Katie, Moni, Paola",
-  "license": "ISC",
-  "dependencies": {
     "angular": "^1.5.5",
     "angular-route": "^1.5.5",
     "body-parser": "^1.15.1",
+    "bootstrap": "^3.3.6",
     "express": "^4.13.4",
     "mobile-angular-ui": "^1.2.1",
->>>>>>> f39af15cddbcf1876c52c17ad91f01f2a3e7087a
+    "jquery": "^2.2.3",
     "pg": "^4.5.5"
   }
 }
