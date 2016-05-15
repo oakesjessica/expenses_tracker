@@ -7,6 +7,8 @@ myApp.controller('InputController', ['$scope', '$http', 'DataFactory', function(
         $scope.transactions = $scope.dataFactory.getTransactionVariable(); // get the data from this function in the data factory and assign it to transactions (ng-repeat variable) to use in the html ng-repeat
     });
 
+    $scope.cc = [""];
+
     // send newWord to the data factory
     $scope.saveNewTransaction = function() {
         var newTransaction = { // set ng-model variable to variable newTransaction
@@ -42,4 +44,6 @@ myApp.controller('InputController', ['$scope', '$http', 'DataFactory', function(
     };
 
     // $scope.dataFactory.retrieveTransaction();
+
+    $scope.dataFactory.getNewTransaction();
 }]);
