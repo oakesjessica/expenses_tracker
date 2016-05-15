@@ -43,8 +43,7 @@
 
 
 <div id ="transactionForm" class="form-group">
-    <form>
-
+    <form ng-submit="saveNewTransaction()">
       <div class= "gridControl">
         <label for="date">Date:</label>
         <input id="date" ng-model="date" type="date" name = "date">
@@ -55,13 +54,15 @@
         <input id="location" ng-model ="location" type ="text" name = "location">
       </div>
 
-<div class= "gridControl">
+      <div class= "gridControl">
         <label for = "category">Category:</label>
         <input id="category" ng-model ="category" type = "text" name = "category">
-</div>
-<div class= "gridControl">
+      </div>
+      <div class= "gridControl">
         <label for = "amount"> Amount:</label>
         <input id="amount" ng-model ="amount" type ="number" name = "amount" min="0">
+
+      </div>
 </div>
 
 <div class= "gridControl">
@@ -69,7 +70,11 @@
         <input id="transactiontype" ng-model ="transactionType" type ="text" name = "transactionType">
       </div>
 
-        <button id="transaction_submit" class="btn btn-primary" ng-click="saveNewTransaction()" type="button">Submit</button>
+      <div class= "gridControl">
+        <label for = "transactionType">Transaction Type </label>
+        <input id="transactionType" ng-model ="transactionType" type ="text" name = "transactionType">
+      </div>
+      <button id="transaction_submit" class="btn btn-primary" type="submit">Submit</button>
     </form>
 </div>
 
