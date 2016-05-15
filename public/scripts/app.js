@@ -1,4 +1,4 @@
-var myApp = angular.module('myApp', ['ngRoute', 'mobile-angular-ui']);
+var myApp = angular.module('myApp', ['ngRoute', 'smart-table']);
 
 myApp.config(['$routeProvider', function($routeProvider) {
 

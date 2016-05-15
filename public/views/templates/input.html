@@ -1,12 +1,11 @@
-<div id="pageContainer" class = "container-fluid">
-
+<div class="mainContainer">>
 <div id = "container">
       <div class = "row">
           <div class = "col-lg-3 col-md-3 col-sm-3">
       			<div class = "row">
       					<div class = "headerOne">Savings
                     <div class="row">
-                        <div class="headerTwo">Money</div>
+                        <div class="headerTwo">${{transactions[0].savings}}</div>
                    </div>
                </div>
             </div>
@@ -15,7 +14,7 @@
         <div class = "row">
             <div class = "headerOne">Checking
                 <div class="row">
-                    <div class="headerTwo">Money</div>
+                    <div class="headerTwo">${{transactions[0].checking}}</div>
                </div>
            </div>
         </div>
@@ -24,7 +23,7 @@
             <div class = "row">
                 <div class = "headerOne">Cash
                     <div class="row">
-                        <div class="headerTwo">Money</div>
+                        <div class="headerTwo">${{transactions[0].cash}}</div>
                    </div>
                </div>
             </div>
@@ -33,7 +32,7 @@
           <div class = "row">
               <div class = "headerOne">Debt
                   <div class="row">
-                      <div class="headerTwo">Money</div>
+                      <div class="headerTwo">${{transactions[0].debt}}</div>
                  </div>
              </div>
           </div>
@@ -61,60 +60,19 @@
       <div class= "gridControl">
         <label for = "amount"> Amount:</label>
         <input id="amount" ng-model ="amount" type ="number" name = "amount" min="0">
-
       </div>
-</div>
-
-<div class= "gridControl">
-        <label for = "transactionType">Transaction Tpye </label>
-            <!--<div class="dropdown">-->
-                <!--<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Transaction Type-->
-                    <!--<span class="caret"></span></button>-->
-                <!--<ul class="dropdown-menu">-->
-                    <!--<li><a href="#">Cash</a></li>-->
-                    <!--<li><a href="#">Credit</a></li>-->
-                    <!--<li><a href="#">Check</a></li>-->
-                <!--</ul>-->
-            <!--</div>-->
-
-            <div class="btn-group">
-                <a ui-turn-on='myDropdown' class='btn'>Transaction Type:</a>
-
-            <!--<div class="btn-group dropdown-toggle">-->
-
-                <ul
-                        class="dropdown-menu"
-                        ui-outer-click="Ui.turnOff('myDropdown')"
-                        ui-outer-click-if="Ui.active('myDropdown')"
-                        role="menu"
-                        ui-show="myDropdown"
-                        ui-state="myDropdown"
-                        ui-turn-off="myDropdown">
-
-                    <li><a>Cash</a></li>
-                    <li><a>Credit</a></li>
-                    <li><a>Check</a></li>
-                </ul>
-            </div>
-            <!--<select name="transactionType">-->
-            <!--<option value="cash">Cash</option>-->
-            <!--<option value="credit">Credit</option>-->
-            <!--<option value="check">Check</option>-->
-            <!--</select>-->
-
-        <!-- <input id="transactionType" ng-model ="transactionType" type ="text" name = "transactionType">
-      </div> -->
 
       <div class= "gridControl">
         <label for = "transactionType">Transaction Type </label>
         <input id="transactionType" ng-model ="transactionType" type ="text" name = "transactionType">
       </div>
-      <button id="transaction_submit" class="btn btn-primary" type="submit">Submit</button>
+      <button id="transaction_submit" class="btn btn-sm btn-primary" type="submit">Submit</button>
     </form>
 </div>
 
-<div id ="mainTable">
-    <table class = "table table-responsive">
+<!-- <div id ="mainTable"> -->
+<table class = "table table-responsive table-striped">
+    <thead>
         <tr>
             <th class = "col-lg-1 col-md-1 col-sm-1 col-xs-1">Date</th>
             <th class = "col-lg-3 col-md-3 col-sm-3 col-xs-3">Location</th>
@@ -123,6 +81,8 @@
             <th class = "col-lg-1 col-md-1 col-sm-1 col-xs-1">Amount</th>
             <th class = "col-lg-1 col-md-1 col-sm-1 col-xs-1">Delete</th>
         </tr>
+    </thead>
+    <tbody>
         <tr ng-repeat = "transaction in transactions">
             <td class = "col-lg-1 col-md-1 col-sm-1 col-xs-1"> {{transaction.displayDate}} </td>
             <td class = "col-lg-3 col-md-3 col-sm-3 col-xs-3"> {{transaction.location}} </td>
@@ -130,8 +90,8 @@
             <td class = "col-lg-3 col-md-3 col-sm-3 col-xs-3"> {{transaction.transactiontype}} </td>
             <td class = "col-lg-1 col-md-1 col-sm-1 col-xs-1"> {{transaction.amount}} </td>
 
-            <td><button class="btn btn-danger" ng-click="deleteTransaction(transaction)">X</button></td>
+            <td><button class="btn btn-xs btn-danger" ng-click="deleteTransaction(transaction)">X</button></td>
         </tr>
-    </table>
-</div>
+    </tbody>
+</table>
 </div>
