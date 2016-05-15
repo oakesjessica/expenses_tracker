@@ -24,3 +24,6 @@ border: 1px solid black;
 .headerTwo {
   font-size: 20px;
 }
+.gridControl {
+  display: inline-block;
+}
