@@ -7,7 +7,7 @@ router.get('/', function(req, res) {
   pg.connect(connection, function(err, client, done) {
     if (err) {
       console.log("GET, pg connection !ERROR", err);
-      res.statu(500).send(err);
+      res.status(500).send(err);
     } else {
       client.query("SELECT t.id AS t_id, uc.id AS uc_id, tt.id AS tt_id, t.wherewhat AS location, t.amount, t.dates AS date, " +
       "uc.category, tt.type_name AS transactiontype, " +
