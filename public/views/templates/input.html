@@ -1,38 +1,39 @@
-<div id="pageContainer">
+<div id="pageContainer" class = "container-fluid">
+
 <div id = "container">
       <div class = "row">
           <div class = "col-lg-3 col-md-3 col-sm-3">
       			<div class = "row">
-      					<div class = "col-lg-3 col-md-3 col-sm-3 text-center headerOne">Savings
+      					<div class = "headerOne">Savings
                     <div class="row">
-                        <div class="col-lg-3 col-md-3 col-sm-3 headerTwo">Money</div>
+                        <div class="headerTwo">Money</div>
                    </div>
                </div>
             </div>
       </div>
       <div class = "col-lg-3 col-md-3 col-sm-3">
         <div class = "row">
-            <div class = "col-lg-3 col-md-3 col-sm-3 headerOne">Checking
+            <div class = "headerOne">Checking
                 <div class="row">
-                    <div class="col-lg-3 col-md-3 col-sm-3 headerTwo">Money</div>
+                    <div class="headerTwo">Money</div>
                </div>
            </div>
         </div>
           </div>
           <div class = "col-lg-3 col-md-3 col-sm-3">
             <div class = "row">
-                <div class = "col-lg-3 col-md-3 col-sm-3 headerOne">Cash
+                <div class = "headerOne">Cash
                     <div class="row">
-                        <div class="col-lg-3 col-md-3 col-sm-3 headerTwo">Money</div>
+                        <div class="headerTwo">Money</div>
                    </div>
                </div>
             </div>
         </div>
         <div class = "col-lg-3 col-md-3 col-sm-3">
           <div class = "row">
-              <div class = "col-lg-3 col-md-3 col-sm-3 headerOne">Debt
+              <div class = "headerOne">Debt
                   <div class="row">
-                      <div class="col-lg-3 col-md-3 col-sm-3 headerTwo">Money</div>
+                      <div class="headerTwo">Money</div>
                  </div>
              </div>
           </div>
@@ -58,7 +59,6 @@
         <label for = "transactionType">Transaction Type:</lable>
         <input ng-model ="transactionType" type ="text" name = "transactionType">
 
-        <!--submit button-->
         <button id="transaction_submit" class="btn btn-primary" ng-click="saveNewTransaction()" type="button">Submit</button>
     </form>
 </div>
@@ -79,9 +79,8 @@
             <td class = "col-lg-3 col-md-3 col-sm-3 col-xs-3"> {{transaction.category}} </td>
             <td class = "col-lg-3 col-md-3 col-sm-3 col-xs-3"> {{transaction.transaction}} </td>
             <td class = "col-lg-1 col-md-1 col-sm-1 col-xs-1"> {{transaction.amount}} </td>
-        </tr>
-        <tr>
-            <td><button class="btn btn-danger" ng-click="deleteTransaction(transaction.id)">Remove Transaction</button></td>
+            <td><button class="btn btn-danger" ng-click="deleteTransaction(transaction.id)">X</button></td>
         </tr>
     </table>
+</div>
 </div>

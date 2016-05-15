@@ -1,22 +1,26 @@
 table, th, td {
-    border: 1px solid black;
+    border: 2px solid black;
     border-collapse: collapse;
 }
 th, td {
     padding: 5px;
     text-align: left;
+
 }
 #pageContainer {
   padding: 20px;
 }
 #container {
-  margin-left: auto;
-  margin-right: auto;
+margin-bottom: 20px;
+border: 1px solid black;
 }
-
+#transactionForm {
+  padding-bottom: 20px;
+}
 .headerOne {
-  font-size: 50px;
+  font-size: 40px;
+  text-align: center;
 }
 .headerTwo {
-  font-size: 30px;
+  font-size: 20px;
 }
