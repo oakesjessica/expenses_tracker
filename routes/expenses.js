@@ -10,7 +10,8 @@ router.get('/', function(req, res) {
       res.statu(500).send(err);
     } else {
       client.query("SELECT t.id AS t_id, uc.id AS uc_id, tt.id AS tt_id, t.wherewhat AS location, t.amount, t.dates AS date, " +
-      "uc.category, tt.type_name AS transactionType " +
+      "uc.category, tt.type_name AS transactiontype, " +
+      "savings.savings, cash.cash, checking.checking, debt.total AS debt " +
       "FROM cash, checking, credit, debt, loans, savings, transactions AS t " +
       "JOIN user_categories AS uc ON t.category_id = uc.id " +
       "JOIN transaction_type AS tt ON t.t_type_id = tt.id WHERE t.user_id = $1;", [userID], function(err, result) {
