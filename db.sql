@@ -64,3 +64,24 @@ CREATE TABLE transactions (
 	category_id INT REFERENCES user_categories(id),
 	t_type_id INT REFERENCES transaction_type(id)
 );
+
+INSERT INTO transaction_type (type_name) VALUES
+('income'),
+('cash gift (income)'),
+('checking gift (income)'),
+('cash expense'),
+('credit expense'),
+('debit expense'),
+('loans'),
+('bill payment (cc)'),
+('bill payment (checking)'),
+('loan payment (cc)'),
+('loan payment (cash)'),
+('loan payment (checking)'),
+('cc payment (checking)'),
+('savings to checking transfer'),
+('checking to savings transfer'),
+('checking - cash deposit'),
+('checking withdrawl from checking'),
+('cash check'),
+('bill');
