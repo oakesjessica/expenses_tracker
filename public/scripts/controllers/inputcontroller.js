@@ -2,6 +2,11 @@ myApp.controller('InputController', ['$scope', '$http', 'DataFactory', function(
 
     $scope.dataFactory = DataFactory;
 
+    // GET runs when html file loads via ng-repeat
+    $scope.dataFactory.getNewTransaction().then(function() { //go to the data factory and run this function. come back to write the .then when you have the results stored in the data factory.
+        $scope.transactions = $scope.dataFactory.getTransactionVariable(); // get the data from this function in the data factory and assign it to transactions (ng-repeat variable) to use in the html ng-repeat
+    });
+
     // send newWord to the data factory
     $scope.saveNewTransaction = function() {
         var newTransaction = { // set ng-model variable to variable newTransaction
