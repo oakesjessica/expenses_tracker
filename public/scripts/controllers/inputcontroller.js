@@ -36,4 +36,5 @@ myApp.controller('InputController', ['$scope', '$http', 'DataFactory', function(
         });
     };
 
+    // $scope.dataFactory.retrieveTransaction();
 }]);

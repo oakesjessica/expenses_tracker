@@ -2,11 +2,31 @@ var router = require("express").Router();
 var pg = require('pg');
 var connection = require('../modules/connection');
 
-router.get("/", function(req, res) {
+router.get('/', function(req, res) {
   pg.connect(connection, function(err, client, done) {
-  //
+    if (err) {
+      console.log("GET, pg connection !ERROR!", err);
+      res.status(500).send(err);
+    } else {
+      client.query("SELECT users.first_name AS fname, users.last_name AS lname, user_categories.category AS cat, transactions.dates AS date, transactions.wherewhat AS ww, transactions.amount AS amount, transaction_type.type_name AS tn " +
+      "FROM user_categories AS uc, transactions AS t, transaction_type as tt, users as u " +
+      "WHERE uc.id = t.category_id AND t.t_type_id = tt.id AND u.id = uc.user_id " +
+      "ORDER BY t.dates ASC;",function(err, result){
+        if (err) {
+          console.log("Retrieving data !ERROR!", err);
+          res.status(500).send(err);
+          process.exit(1);
+        } else {
+          console.log("get index");
+          console.log(res.result.rows);
+          res.send(res.result.rows);
+          done();
+          }
+        }
+      );
+    }
   }); //  pg.connect
-}); //  router.get
+});
 
 /**
 * Posting layout
@@ -19,31 +39,19 @@ router.get("/", function(req, res) {
 router.post("/", function(req, res) {
   var userID = 1;
 
-  var incomeOrGift = req.body.category === "income" || req.body.category === "checking gift (income)";
-  var expCash = req.body.category === "cash expense";
-  var expDebit = req.body.category === "debit expense";
-  var expCC = req.body.category === "credit expense";
-  var tookOutLoan = req.body.category === "loans";
-  var bill = req.body.category === "bill";
-  var billCC = req.body.category === "bill payment (cc)";
-  var billDebit = req.body.category === "bill payment (checking)";
-  var loanCC = req.body.category === "loan payment (cc)";
-  var debitLoan = req.body.category === "loan payment (checking)";
-  var ccPayment = req.body.category === "cc payment (checking)";
-  var savToCheckTransfer = req.body.category === "savings to checking transfer";
-  var checkToSavTransfer = req.body.category === "checking to savings transfer";
-  var checkingDeposit = req.body.category === "checking - cash deposit" || req.body.category === "checking deposit";
-  var cashWithdrawal = req.body.category === "cash withdrawal from checking";
-  var cashCheck = req.body.category === "cash check" || req.body.category === "cash gift (income)";
-
   pg.connect(connection, function(err, client, done) {
     if (err) {
       console.log("POST, pg connection !ERROR!", err);
       res.status(500).send(err);
+      proces.exit(1);
     } else {
+      var reqCategory = req.body.category;
+      var transactionType = req.body.transactionType;
+
       client.query("INSERT INTO user_categories (category, user_id) " +
       "VALUES (LOWER($1), $2) " +
-      "ON CONFLICT DO NOTHING;", [req.body.category, userID], function(err, result) {
+      "ON CONFLICT DO NOTHING " +
+      "RETURNING id;", [reqCategory, userID], function(err, result) {
         if(err) {
           console.log("Posting category !ERROR!", err);
           res.status(500).send(err);
@@ -51,52 +59,52 @@ router.post("/", function(req, res) {
         } else {
           client.query("SELECT tt.id AS tt_id, uc.id AS cat_id " +
           "FROM transaction_type AS tt, user_categories AS uc " +
-          "WHERE tt.type_name = LOWER($1) AND uc.category = LOWER($2) AND uc.user_id = $3;", [req.body.type, req.body.category, userID], function(err, result) {
+          "WHERE tt.type_name = LOWER($1) AND uc.category = LOWER($2) AND uc.user_id = $3;", [transactionType, reqCategory, userID], function(err, result) {
             if (err) {
               console.log("Selecting transaction type and category !ERROR!", err);
               res.status(500).send(err);
               process.exit(1);
             } else {
               client.query("INSERT INTO transactions (wherewhat, amount, user_id, category_id, t_type_id, dates) VALUES " +
-              "($1, $2, $3, $4, $5, $6);", [req.body.wherewhat, req.body.amount, userID, req.body.result.rows[0], req.body.result.rows[1], req.body.date], function(err, result) {
+              "($1, $2, $3, $4, $5, $6);", [req.body.location, req.body.amount, userID, result.rows[0].cat_id, result.rows[0].tt_id, req.body.date], function(err, result) {
                 if (err) {
                   console.log("Inserting into transactions !ERROR!", err);
                   res.status(500).send(err);
                   process.exit(1);
                 } else {
-                  if (incomeOrGift) {
-                    addToCashCheckSav("checking", req.body.amount, userID);
-                  } else if (bill) {
-                    bills(req.body.amount, userID);
-                  } else if (expCash) {
-                    subFromCashCheckSav("cash", req.body.amount, userID);
-                  } else if (expDebit) {
-                    subFromCashCheckSav("debit", req.body.amount, userID);
-                  } else if (expCC) {
-                    subFromCashCheckSav("credit", req.body.amount, userID);
-                  } else if (tookOutLoan) {
+                  if (transactionType === "income" || transactionType === "checking gift (income)") {
+                    addToChecking(req.body.amount, userID);
+                  } else if (transactionType === "cash expense") {
+                    subFromCash(req.body.amount, userID);
+                  } else if (transactionType === "debit expense") {
+                    subFromChecking(req.body.amount, userID);
+                  } else if (transactionType === "credit expense") {
+                    paidWithCredit(req.body.amount, userID);
+                  } else if (transactionType === "loans") {
                     addToLoans(req.body.amount, userID);
-                  } else if (billCC) {
+                  } else if (transactionType === "bill") {
+                    addToDebt(req.body.amount, userID);
+                  } else if (transactionType === "bill payment (cc)") {
                     paidBillsCC(req.body.amount, userID);
-                  } else if (billDebit) {
+                  } else if (transactionType === "bill payment (checking)") {
                     paidBillsDebit(req.body.amount, userID);
-                  } else if (loanCC) {
+                  } else if (transactionType === "loan payment (cc)") {
                     PaidLoansCC(req.body.amount, userID);
-                  } else if (debitLoan) {
+                  } else if (transactionType === "loan payment (checking)") {
                     PaidLoansDebit(req.body.amount, userID);
-                  } else if (ccPayment) {
+                  } else if (transactionType === "cc payment (checking)") {
                     paidCC(req.body.amount, userID);
-                  } else if (savToCheckTransfer) {
+                  } else if (transactionType === "savings to checking transfer") {
                     transferSavToCheck(req.body.amount, userID);
-                  } else if (checkToSavTransfer) {
+                  } else if (transactionType === "checking to savings transfer") {
                     transferCheckToSav(req.body.amount, userID);
-                  } else if (checkingDeposit) {
+                  } else if (transactionType === "checking - cash deposit" || reqCategory === "checking deposit") {
                     depositIntoChecking(req.body.amount, userID);
-                  } else if (cashWithdrawal) {
-                    withdrawFromChecking(req.body.amount, userID);
-                  } else if (cashCheck) {
-                    cashGiftORCheck(req.body.amount, userID);
-                  }
+                  } else if (transactionType === "cash withdrawal from checking") {
+                    withdrawCash(req.body.amount, userID);
+                  } else if (transactionType === "cash check" || reqCategory === "cash gift (income)") {
+                    cashACheck(req.body.amount, userID);
+                  } //  else ifs
                 } //  else
               }); //  client.query - INSERT INTO transactions
             }
@@ -104,59 +112,105 @@ router.post("/", function(req, res) {
         }
       }); //  client.query - INSERT INTO categories
     }
-  });
-});
-/**
-  * This function will add the amount to the
-  * totals of cash, checking, or savings table
-*/
-function addToCashCheckSav(table, amount, userID) {
-  pg.connect(connection, function(err, client, done) {
-    if (err) {
-      console.log("addToCashCheckSav, pg connection !ERROR!", err);
-      res.status(500).send(err);
-    } else {
-      client.query("UPDATE $1 " +
-      "SET $1 = $1 + $2 " +
-      "WHERE $1.user_id = $3;", [table, amount, userID], function(err, result) {
-        if (err) {
-          console.log("UPDATE " + table + " !ERROR!", err);
-          res.status(500).send(err);
-          process.exit(1);
-        } else {
-          done();
-        }
-      }); //  client.query
-    } //  else
   }); //  pg.connect
-} //  addToCashCheckSav
 /////////////////////////////////////////////////////////////////////////////////////////////////////
-function subFromCashCheckSav(table, amount, userID) {
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+function addToChecking(amount, userID) {
   pg.connect(connection, function(err, client, done) {
     if (err) {
-      console.log("subFromCashCheckSav, pg connection !ERROR!", err);
+      console.log("addToChecking, pg connection !ERROR!", err);
       res.status(500).send(err);
     } else {
-      client.query("UPDATE $1 " +
-      "SET $1 = $1 - $2 " +
-      "WHERE $1.user_id = $3;", [table, amount, userID], function(err, result) {
+      console.log("updating checking");
+      client.query("UPDATE checking " +
+      "SET checking = checking + $1 " +
+      "WHERE checking.user_id = $2;", [amount, userID], function(err, result) {
         if (err) {
-          console.log("UPDATE " + table + " !ERROR!", err);
+          console.log("addToChecking UPDATE !ERROR!", err);
           res.status(500).send(err);
           process.exit(1);
         } else {
+          res.send(result.rows);
           done();
         }
       }); //  client.query
     } //  else
   }); //  pg.connect
-} //  subFromCashCheckSav
+} //  addToChecking
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+function subFromCash(amount, userID) {
+  pg.connect(connection, function(err, client, done) {
+    if (err) {
+      console.log("subFromCash, pg connection !ERROR!", err);
+      res.status(500).send(err);
+    } else {
+      console.log("cash");
+      client.query("UPDATE cash " +
+      "SET cash = cash - $1 " +
+      "WHERE cash.user_id = $2;", [amount, userID], function(err, result) {
+        if (err) {
+          console.log("subFromCash UPDATE !ERROR!", err);
+          res.status(500).send(err);
+          process.exit(1);
+        } else {
+          res.send(result.rows);
+          done();
+        }
+      }); //  client.query
+    } //  else
+  }); //  pg.connect
+} //  subFromCash
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+function subFromChecking(amount, userID) {
+  pg.connect(connection, function(err, client, done) {
+    if (err) {
+      console.log("subFromChecking, pg connection !ERROR!", err);
+      res.status(500).send(err);
+    } else {
+      client.query("UPDATE checking " +
+      "SET checking = checking - $1 " +
+      "WHERE checking.user_id = $2;", [amount, userID], function(err, result) {
+        if (err) {
+          console.log("subFromChecking UPDATE !ERROR!", err);
+          res.status(500).send(err);
+          process.exit(1);
+        } else {
+          res.send(result.rows);
+          done();
+        }
+      }); //  client.query
+    } //  else
+  }); //  pg.connect
+} //  subFromChecking
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+function paidWithCredit(amount, userID) {
+  pg.connect(connection, function(err, client, done) {
+    if (err) {
+      console.log("paidWithCredit, pg connection !ERROR!", err);
+      res.status(500).send(err);
+    } else {
+      client.query("UPDATE credit " +
+      "SET total = total + $1 " +
+      "WHERE credit.user_id = $2;", [amount, userID], function(err, result) {
+        if (err) {
+          console.log("paidWithCredit UPDATE !ERROR!", err);
+          res.status(500).send(err);
+          process.exit(1);
+        } else {
+          res.send(result.rows);
+          done();
+        }
+      }); //  client.query
+    } //  else
+  }); //  pg.connect
+} //  paidWithCredit
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 function addToLoans(amount, userID) {
   pg.connect(connection, function(err, client, done) {
     if (err) {
       console.log("AddToLoans, pg connection !ERROR!", err);
-      res.status(500).send(err);
+      return res.status(500).send(err);
     } else {
       client.query("UPDATE loans " +
       "SET total = total + $1 " +
@@ -174,6 +228,7 @@ function addToLoans(amount, userID) {
               res.status(500).send(err);
               process.exit(1);
             } else {
+              res.send(result.rows);
               done();
             } //  else
           }); //  client.query
@@ -187,7 +242,7 @@ function PaidLoansCC(amount, userID) {
   pg.connect(connection, function(err, client, done) {
     if (err) {
       console.log("PaidLoansCC, pg connection !ERROR!", err);
-      res.status(500).send(err);
+      return res.status(500).send(err);
     } else {
       client.query("UPDATE loans " +
       "SET total = total - $1 " +
@@ -197,25 +252,16 @@ function PaidLoansCC(amount, userID) {
           res.status(500).send(err);
           process.exit(1);
         } else {
-          client.query("UPDATE debt " +
-          "SET total = total - $1 " +
-          "WHERE debt.user_id = $2;", [amount, userID], function(err, result) {
+          client.query("UPDATE credit " +
+          "SET total = total + $1 " +
+          "WHERE credit.user_id = $2;", [amount, userID], function(err, result) {
             if (err) {
               console.log("UPDATE to PaidLoansCC debt !ERROR!", err);
               res.status(500).send(err);
               process.exit(1);
             } else {
-              client.query("UPDATE credit " +
-              "SET total = total + $1 " +
-              "WHERE credit.user_id = $2;", [amount, userID], function(err, result) {
-                if (err) {
-                  console.log("UPDATE to PaidLoansCC credit !ERROR!", err);
-                  res.status(500).send(err);
-                  process.exit(1);
-                } else {
-                  done();
-                }
-              });
+              res.send(result.rows);
+              done();
             } //  else
           }); //  client.query
         } //  else
@@ -247,13 +293,14 @@ function PaidLoansDebit(amount, userID) {
               process.exit(1);
             } else {
               client.query("UPDATE checking " +
-              "SET total = total + $1 " +
+              "SET checking = checking + $1 " +
               "WHERE checking.user_id = $2;", [amount, userID], function(err, result) {
                 if (err) {
                   console.log("UPDATE to PaidLoansDebit checking !ERROR!", err);
                   res.status(500).send(err);
                   process.exit(1);
                 } else {
+                  res.send(result.rows);
                   done();
                 }
               });
@@ -271,25 +318,16 @@ function paidBillsCC(amount, userID) {
       console.log("paidBillsCC, pg connection !ERROR!", err);
       res.status(500).send(err);
     } else {
-      client.query("UPDATE debt " +
-      "SET debt = total - $1 " +
-      "WHERE debt.user_id = $2;", [amount, userID], function(err, result) {
+      client.query("UPDATE credit " +
+      "SET total = total + $1 " +
+      "WHERE credit.user_id = $2;", [amount, userID], function(err, result) {
         if (err) {
           console.log("UPDATE to paidBillsCC debt !ERROR!", err);
           res.status(500).send(err);
           process.exit(1);
         } else {
-          client.query("UPDATE credit " +
-          "SET total = total + $1 " +
-          "WHERE credit.user_id = $2;", [amount, userID], function(err, result) {
-            if (err) {
-              console.log("UPDATE to paidBillsCC credit !ERROR!", err);
-              res.status(500).send(err);
-              process.exit(1);
-            } else {
-              done();
-            } //  else
-          }); //  client.query
+          res.send(result.rows);
+          done();
         } //  else
       }); //  client.query
     } //  else
@@ -303,7 +341,7 @@ function paidBillsDebit(amount, userID) {
       res.status(500).send(err);
     } else {
       client.query("UPDATE debt " +
-      "SET debt = total - $1 " +
+      "SET total = total - $1 " +
       "WHERE debt.user_id = $2;", [amount, userID], function(err, result) {
         if (err) {
           console.log("UPDATE to paidBillsDebit debt !ERROR!", err);
@@ -311,7 +349,7 @@ function paidBillsDebit(amount, userID) {
           process.exit(1);
         } else {
           client.query("UPDATE checking " +
-          "SET total = total + $1 " +
+          "SET checking = checking + $1 " +
           "WHERE checking.user_id = $2;", [amount, userID], function(err, result) {
             if (err) {
               console.log("UPDATE to paidBillsDebit checking !ERROR!", err);
@@ -334,7 +372,7 @@ function paidCC(amount, userID) {
       res.status(500).send(err);
     } else {
       client.query("UPDATE debt " +
-      "SET debt = total - $1 " +
+      "SET total = total - $1 " +
       "WHERE debt.user_id = $2;", [amount, userID], function(err, result) {
         if (err) {
           console.log("UPDATE to paidBillsDebit debt !ERROR!", err);
@@ -357,6 +395,7 @@ function paidCC(amount, userID) {
                   res.status(500).send(err);
                   process.exit(1);
                 } else {
+                  res.send(result.rows);
                   done();
                 }
               });
@@ -375,7 +414,7 @@ function transferSavToCheck(amount, userID) {
       res.status(500).send(err);
     } else {
       client.query("UPDATE savings " +
-      "SET total = total - $1 " +
+      "SET savings = savings - $1 " +
       "WHERE savings.user_id = $2;", [amount, userID], function(err, result) {
         if (err) {
           console.log("UPDATE to transferSavToCheck savings !ERROR!", err);
@@ -383,13 +422,14 @@ function transferSavToCheck(amount, userID) {
           process.exit(1);
         } else {
           client.query("UPDATE checking " +
-          "SET total = total + $1 " +
+          "SET checking = checking + $1 " +
           "WHERE checking.user_id = $2;", [amount, userID], function(err, result) {
             if (err) {
               console.log("UPDATE to transferSavToCheck checking !ERROR!", err);
               res.status(500).send(err);
               process.exit(1);
             } else {
+              res.send(result.rows);
               done();
             } //  else
           }); //  client.query - update checking
@@ -401,118 +441,124 @@ function transferSavToCheck(amount, userID) {
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 function transferCheckToSav(amount, userID) {
   pg.connect(connection, function(err, client, done) {
-    if (err) {
-      console.log("transferCheckToSav, pg connection !ERROR!", err);
-      res.status(500).send(err);
-    } else {
-      client.query("UPDATE savings " +
-      "SET total = total + $1 " +
-      "WHERE savings.user_id = $2;", [amount, userID], function(err, result) {
-        if (err) {
-          console.log("UPDATE to transferCheckToSav savings !ERROR!", err);
-          res.status(500).send(err);
-          process.exit(1);
-        } else {
-          client.query("UPDATE checking " +
-          "SET total = total - $1 " +
-          "WHERE checking.user_id = $2;", [amount, userID], function(err, result) {
-            if (err) {
-              console.log("UPDATE to transferCheckToSav checking !ERROR!", err);
-              res.status(500).send(err);
-              process.exit(1);
-            } else {
-              done();
-            } //  else
-          }); //  client.query - update checking
-        } //  else
-      }); //  client.query - update savings
-    } //  else
+    client.query("UPDATE savings " +
+    "SET savings = savings + $1 " +
+    "WHERE savings.user_id = $2;", [amount, userID], function(err, result) {
+      if (err) {
+        console.log("UPDATE to checkToSavTransfer savings !ERROR!", err);
+        res.status(500).send(err);
+        process.exit(1);
+      } else {
+        client.query("UPDATE checking " +
+        "SET checking = checking - $1 " +
+        "WHERE checking.user_id = $2;", [amount, userID], function(err, result) {
+          if (err) {
+            console.log("UPDATE to checkToSavTransfer checking !ERROR!", err);
+            res.status(500).send(err);
+            process.exit(1);
+          } else {
+            res.send(result.rows);
+            done();
+          } //  else
+        }); //  client.query - update checking
+      } //  else
+    }); //  client.query - update savings
   }); //  pg.connect
 } //  transferCheckToSav
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 function depositIntoChecking(amount, userID) {
   pg.connect(connection, function(err, client, done) {
-    if (err) {
-      console.log("depositIntoChecking, pg connection !ERROR!", err);
-      res.status(500).send(err);
-    } else {
-      client.query("UPDATE cash " +
-      "SET total = total - $1 " +
-      "WHERE cash.user_id = $2;", [amount, userID], function(err, result) {
-        if (err) {
-          console.log("UPDATE to depositIntoChecking cash !ERROR!", err);
-          res.status(500).send(err);
-          process.exit(1);
-        } else {
-          client.query("UPDATE checking " +
-          "SET total = total + $1 " +
-          "WHERE checking.user_id = $2;", [amount, userID], function(err, result) {
-            if (err) {
-              console.log("UPDATE to depositIntoChecking checking !ERROR!", err);
-              res.status(500).send(err);
-              process.exit(1);
-            } else {
-              done();
-            } //  else
-          }); //  client.query - update checking
-        } //  else
-      }); //  client.query - update cash
-    } //  else
+    client.query("UPDATE cash " +
+    "SET total = total - $1 " +
+    "WHERE cash.user_id = $2;", [amount, userID], function(err, result) {
+      if (err) {
+        console.log("UPDATE to checkingDeposit cash !ERROR!", err);
+        res.status(500).send(err);
+        process.exit(1);
+      } else {
+        client.query("UPDATE checking " +
+        "SET checking = checking + $1 " +
+        "WHERE checking.user_id = $2;", [amount, userID], function(err, result) {
+          if (err) {
+            console.log("UPDATE to checkingDeposit checking !ERROR!", err);
+            res.status(500).send(err);
+            process.exit(1);
+          } else {
+            res.send(result.rows);
+            done();
+          } //  else
+        }); //  client.query - update checking
+      } //  else
+    }); //  client.query - update cash
   }); //  pg.connect
 } //  depositIntoChecking
 /////////////////////////////////////////////////////////////////////////////////////////////////////
-function withdrawFromChecking(amount, userID) {
+function withdrawCash(amount, userID) {
   pg.connect(connection, function(err, client, done) {
-    if (err) {
-      console.log("withdrawFromChecking, pg connection !ERROR!", err);
-      res.status(500).send(err);
-    } else {
-      client.query("UPDATE cash " +
-      "SET total = total + $1 " +
-      "WHERE cash.user_id = $2;", [amount, userID], function(err, result) {
-        if (err) {
-          console.log("UPDATE to withdrawFromChecking cash !ERROR!", err);
-          res.status(500).send(err);
-          process.exit(1);
-        } else {
-          client.query("UPDATE checking " +
-          "SET total = total - $1 " +
-          "WHERE checking.user_id = $2;", [amount, userID], function(err, result) {
-            if (err) {
-              console.log("UPDATE to withdrawFromChecking checking !ERROR!", err);
-              res.status(500).send(err);
-              process.exit(1);
-            } else {
-              done();
-            } //  else
-          }); //  client.query - update checking
-        } //  else
-      }); //  client.query - update cash
-    } //  else
-  }); //  pg.connect
-} //  withdrawFromChecking
+    client.query("UPDATE cash " +
+    "SET cash = cash + $1 " +
+    "WHERE cash.user_id = $2;", [amount, userID], function(err, result) {
+      if (err) {
+        console.log("UPDATE to withdrawFromChecking cash !ERROR!", err);
+        res.status(500).send(err);
+        process.exit(1);
+      } else {
+        client.query("UPDATE checking " +
+        "SET checking = checking - $1 " +
+        "WHERE checking.user_id = $2;", [amount, userID], function(err, result) {
+          if (err) {
+            console.log("UPDATE to withdrawFromChecking checking !ERROR!", err);
+            res.status(500).send(err);
+            process.exit(1);
+          } else {
+            res.send(result.rows);
+            done();
+          } //  else
+        }); //  client.query - update checking
+      } //  else
+    }); //  client.query - update cash
+  }); //  pg.connection
+} //  withdrawCash
 /////////////////////////////////////////////////////////////////////////////////////////////////////
-function cashGiftORCheck(amount, userID) {
+function cashACheck(amount, userID) {
   pg.connect(connection, function(err, client, done) {
-    if (err) {
-      console.log("cashGiftORCheck, pg connection !ERROR!", err);
-      res.status(500).send(err);
-    } else {
-      client.query("UPDATE cash " +
-      "SET total = total + $1 " +
-      "WHERE cash.user_id = $2;", [amount, userID], function(err, result) {
-        if (err) {
-          console.log("UPDATE to cashGiftORCheck cash !ERROR!", err);
-          res.status(500).send(err);
-          process.exit(1);
-        } else {
-          done();
-        }
-      }); //  client.query - update cash
-    } //  else
-  }); //  pg.connect
-} //  cashGiftORCheck
+    client.query("UPDATE cash " +
+    "SET cash = cash + $1 " +
+    "WHERE cash.user_id = $2;", [amount, userID], function(err, result) {
+      if (err) {
+        console.log("UPDATE to cash !ERROR!", err);
+        res.status(500).send(err);
+        process.exit(1);
+      } else {
+        res.send(result.rows);
+        done();
+      }
+    }); //  client.query - update cash
+  }); //  pg.connection
+} //  cashACheck
 /////////////////////////////////////////////////////////////////////////////////////////////////////
+function addToDebt(amount, userID) {
+  pg.connect(connection, function(err, client, done) {
+    client.query("UPDATE debt " +
+    "SET total = total + $1 " +
+    "WHERE debt.user_id = $2;", [amount, userID], function(err, result) {
+      if (err) {
+        console.log("UPDATE to debt !ERROR!", err);
+        res.status(500).send(err);
+        process.exit(1);
+      } else {
+        res.send(result.rows);
+        done();
+      }
+    }); //  client.query - update debt
+  }); //  pg.connection
+} //  cashACheck
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+}); //  post
+
+
 
 
 module.exports = router;

@@ -70,12 +70,12 @@ router.get('/', function(req, res) {
           res.status(500).send(err);
           process.exit(1);
         } else {
-          res.send(res.rows)
+          res.send(res.rows);
           console.log("get index");
           console.log(res.rows);
           }
         }
-      )
+      );
     }
 
   }); //  pg.connect
@@ -100,3 +100,5 @@ router.get('/', function(req, res) {
 //   users.id = user_categories.user_id
 // ORDER BY
 //   transactions.dates ASC;
+
+module.exports = router;

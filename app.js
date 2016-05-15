@@ -4,7 +4,8 @@ var bodyParser = require('body-parser');
 var path = require('path');
 
 //route modules
-var input = require('./routes/inputmodule');
+// var input = require('./routes/inputmodule');
+var input = require("./routes/expenses");
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
