@@ -1,37 +1,39 @@
-<div id ="mainContainer">
+<div id="pageContainer" class = "container-fluid">
+
+<div id = "container">
       <div class = "row">
           <div class = "col-lg-3 col-md-3 col-sm-3">
       			<div class = "row">
-      					<div class = "col-lg-3 col-md-3 col-sm-3 headerOne text-center">Savings
+      					<div class = "headerOne">Savings
                     <div class="row">
-                        <div class="col-lg-3 col-md-3 col-sm-3 headerTwo text-center">Money</div>
+                        <div class="headerTwo">Money</div>
                    </div>
                </div>
             </div>
       </div>
       <div class = "col-lg-3 col-md-3 col-sm-3">
         <div class = "row">
-            <div class = "col-lg-3 col-md-3 col-sm-3 headerOne">Checking
+            <div class = "headerOne">Checking
                 <div class="row">
-                    <div class="col-lg-3 col-md-3 col-sm-3 headerTwo">Money</div>
+                    <div class="headerTwo">Money</div>
                </div>
            </div>
         </div>
           </div>
           <div class = "col-lg-3 col-md-3 col-sm-3">
             <div class = "row">
-                <div class = "col-lg-3 col-md-3 col-sm-3 headerOne">Cash
+                <div class = "headerOne">Cash
                     <div class="row">
-                        <div class="col-lg-3 col-md-3 col-sm-3 headerTwo">Money</div>
+                        <div class="headerTwo">Money</div>
                    </div>
                </div>
             </div>
         </div>
         <div class = "col-lg-3 col-md-3 col-sm-3">
           <div class = "row">
-              <div class = "col-lg-3 col-md-3 col-sm-3 headerOne">Debt
+              <div class = "headerOne">Debt
                   <div class="row">
-                      <div class="col-lg-3 col-md-3 col-sm-3 headerTwo">Money</div>
+                      <div class="headerTwo">Money</div>
                  </div>
              </div>
           </div>
@@ -42,22 +44,52 @@
 
 <div id ="transactionForm">
     <form>
-        <label for = "date">Date:</label>
-        <input ng-model ="date" type="date" name = "date">
+        <label for="date">Date:</label>
+        <input id="date" ng-model="date" type="date" name = "date">
 
         <label for = "location">Location:</label>
-        <input ng-model ="location" type ="text" name = "location">
+        <input id="location" ng-model ="location" type ="text" name = "location">
 
         <label for = "category">Category:</label>
-        <input ng-model ="category" type = "text" name = "category">
+        <input id="category" ng-model ="category" type = "text" name = "category">
 
         <label for = "amount"> Amount:</label>
-        <input ng-model ="amount" type ="number" name = "amount">
+        <input id="amount" ng-model ="amount" type ="number" name = "amount">
 
-        <label for = "transactionType">Transaction Type:</lable>
-        <input ng-model ="transactionType" type ="text" name = "transactionType">
+        <label for = "transactionType">
+            <!--<div class="dropdown">-->
+                <!--<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Transaction Type-->
+                    <!--<span class="caret"></span></button>-->
+                <!--<ul class="dropdown-menu">-->
+                    <!--<li><a href="#">Cash</a></li>-->
+                    <!--<li><a href="#">Credit</a></li>-->
+                    <!--<li><a href="#">Check</a></li>-->
+                <!--</ul>-->
+            <!--</div>-->
+            <div class="btn-group">
+                <a ui-turn-on='myDropdown' class='btn'>Transaction Type</a>
+                <ul
+                        class="dropdown-menu"
+                        ui-outer-click="Ui.turnOff('myDropdown')"
+                        ui-outer-click-if="Ui.active('myDropdown')"
+                        role="menu"
+                        ui-show="myDropdown"
+                        ui-state="myDropdown"
+                        ui-turn-off="myDropdown">
 
-        <!--submit button-->
+                    <li><a>Cash</a></li>
+                    <li><a>Credit</a></li>
+                    <li><a>Check</a></li>
+                </ul>
+            </div>
+            <!--<select name="transactionType">-->
+            <!--<option value="cash">Cash</option>-->
+            <!--<option value="credit">Credit</option>-->
+            <!--<option value="check">Check</option>-->
+            <!--</select>-->
+        </label>
+        <input id="transactionType" ng-model ="transactionType" type ="text" name = "transactionType">
+
         <button id="transaction_submit" class="btn btn-primary" ng-click="saveNewTransaction()" type="button">Submit</button>
     </form>
 </div>
@@ -72,15 +104,15 @@
             <th class = "col-lg-1 col-md-1 col-sm-1 col-xs-1">Amount</th>
             <th class = "col-lg-1 col-md-1 col-sm-1 col-xs-1">Delete</th>
         </tr>
-        <tr ng-repeat = "transactions in transaction">
-            <td class = "col-lg-1 col-md-1 col-sm-1 col-xs-1"> {{transaction.date}} </td>
-            <td class = "col-lg-3 col-md-3 col-sm-3 col-xs-3"> {{transaction.location}} </td>
+        <tr ng-repeat = "transaction in transactions">
+            <td class = "col-lg-1 col-md-1 col-sm-1 col-xs-1"> {{date}} </td>
+            <td class = "col-lg-3 col-md-3 col-sm-3 col-xs-3"> {{location}} </td>
             <td class = "col-lg-3 col-md-3 col-sm-3 col-xs-3"> {{transaction.category}} </td>
-            <td class = "col-lg-3 col-md-3 col-sm-3 col-xs-3"> {{transaction.transaction}} </td>
+            <td class = "col-lg-3 col-md-3 col-sm-3 col-xs-3"> {{transaction.transactionType}} </td>
             <td class = "col-lg-1 col-md-1 col-sm-1 col-xs-1"> {{transaction.amount}} </td>
-        </tr>
-        <tr>
-            <td><button class="btn btn-danger" ng-click="deleteTransaction(transaction.id)">Remove Transaction</button></td>
+
+            <td><button class="btn btn-danger" ng-click="deleteTransaction(transaction.id)">X</button></td>
         </tr>
     </table>
+</div>
 </div>
