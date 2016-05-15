@@ -15,14 +15,29 @@ myApp.factory('DataFactory', ['$http', function($http) {
   var retrieveTransaction = function() {
     var promise = $http.get('/input').then(function(response) { // go to the GET in  inputmodule and wait for a response. then use that data in this next function.
       newTransaction = response.data; // save those results to the transaction variable and go back to the controller
-      console.log("inside the retrieveTransaction", newTransaction); // newTransaction is an array of transaction objects
+      for (var i = 0; i < newTransaction.length; i++) {
+        newTransaction[i].displayDate = moment(newTransaction[i].date).zone(5).format("YYYY-M-D");
+      }
+      // newTransaction.map(function(inputDate) {
+      //   newTransaction.displayDate = moment(inputDate.date).format("MMM Do, YYYY");
+      // });
+      //
+      // vm.ticketList.map(function(ticketEntry){
+      //   var displayDateCreated = moment(ticketEntry.dateCreated).format("dddd, MMMM Do YYYY, h:mm:ss a");
+      //   ticketEntry.dateCreatedString = displayDateCreated;
+      //   var displayDateUpdated = moment(ticketEntry.dateUpdated).format("dddd, MMMM Do YYYY, h:mm:ss a");
+      //   ticketEntry.dateUpdatedString = displayDateUpdated;
+      //   //return newDate;
+      // });
+
     });
     return promise; // needed to wrap up this function
   };
 
   var deleteFromTransactionList = function(data) {
     console.log(data);
-    var promise = $http.delete('/transaction/transactionList' + data).then(function(response) {
+    var promise = $http.delete('/input/' + data.t_id, data).then(function(response) {
+      retrieveTransaction();
     });
     return promise;
   };

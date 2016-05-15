@@ -37,9 +37,7 @@ myApp.controller('InputController', ['$scope', '$http', 'DataFactory', function(
     // remove transaction
     $scope.deleteTransaction = function(id) {
         $scope.dataFactory.deleteTransaction(id).then(function() {
-            $scope.dataFactory.getNewTransaction().then(function() {
-                $scope.transactions = $scope.dataFactory.getTransactionVariable();
-            }); // put up on the DOM
+            $scope.dataFactory.getNewTransaction();
         });
     };
 
