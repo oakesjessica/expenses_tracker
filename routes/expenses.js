@@ -57,7 +57,7 @@ router.post("/", function(req, res) {
           res.status(500).send(err);
           process.exit(1); //disconnect from db
         } else {
-          client.query("SELECT tt.id AS tt_id, uc.id AS cat_id, t.user_id " +
+          client.query("SELECT tt.id AS tt_id, uc.id AS cat_id " +
           "FROM transaction_type AS tt, user_categories AS uc " +
           "WHERE tt.type_name = LOWER($1) AND uc.category = LOWER($2) AND uc.user_id = $3;", [transactionType, reqCategory, userID], function(err, result) {
             if (err) {
