@@ -3,27 +3,28 @@ var pg = require('pg');
 var connection = require('../modules/connection');
 
 router.get('/', function(req, res) {
+  var userID = 1;
   pg.connect(connection, function(err, client, done) {
     if (err) {
-      console.log("GET, pg connection !ERROR!", err);
-      res.status(500).send(err);
+      console.log("GET, pg connection !ERROR", err);
+      res.statu(500).send(err);
     } else {
-      client.query("SELECT users.first_name AS fname, users.last_name AS lname, user_categories.category AS cat, transactions.dates AS date, transactions.wherewhat AS ww, transactions.amount AS amount, transaction_type.type_name AS tn " +
-      "FROM user_categories AS uc, transactions AS t, transaction_type as tt, users as u " +
-      "WHERE uc.id = t.category_id AND t.t_type_id = tt.id AND u.id = uc.user_id " +
-      "ORDER BY t.dates ASC;",function(err, result){
+      client.query("SELECT t.id AS t_id, uc.id AS uc_id, tt.id AS tt_id, t.wherewhat AS location, t.amount, t.dates AS date, " +
+      "uc.category, tt.type_name AS transactionType " +
+      "FROM cash, checking, credit, debt, loans, savings, transactions AS t " +
+      "JOIN user_categories AS uc ON t.category_id = uc.id " +
+      "JOIN transaction_type AS tt ON t.t_type_id = tt.id WHERE t.user_id = $1;", [userID], function(err, result) {
         if (err) {
           console.log("Retrieving data !ERROR!", err);
           res.status(500).send(err);
           process.exit(1);
         } else {
           console.log("get index");
-          console.log(res.result.rows);
-          res.send(res.result.rows);
+          console.log(result.rows);
+          res.send(result.rows);
           done();
-          }
         }
-      );
+      }); //client.query
     }
   }); //  pg.connect
 });

@@ -18,7 +18,7 @@ app.use(express.static('public/scripts/factories'));
 app.use(express.static('public/styles'));
 app.use(express.static('public/vendors'));
 
-//app.use('/input', input);
+app.use('/input', input);
 
 app.set('port', process.env.PORT || 5000);
 

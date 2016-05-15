@@ -13,7 +13,7 @@ myApp.factory('DataFactory', ['$http', function($http) {
   };
 
   var retrieveTransaction = function() {
-    var promise = $http.get('/input/').then(function(response) { // go to the GET in  inputmodule and wait for a response. then use that data in this next function.
+    var promise = $http.get('/input').then(function(response) { // go to the GET in  inputmodule and wait for a response. then use that data in this next function.
       newTransaction = response.data; // save those results to the transaction variable and go back to the controller
       console.log("inside the retrieveTransaction", newTransaction); // newTransaction is an array of transaction objects
     });
