@@ -1,3 +1,49 @@
-<div>
-    <h3>Some text goes here</h3>
+<div id="contentLocation">
+    <div id="container">
+        <div class="row">
+            <div class="col-md-3" id="savingsTotal"> <h1>Savings</h1> <br> <h3>Test</h3> </div>
+            <div class="col-md-3" id="checkingTotal"> <h1>Checking</h1> <br> <h3>Test</h3> </div>
+            <div class="col-md-3" id="cashTotal"> <h1>Cash</h1> <br> <h3>Test</h3> </div>
+            <div class="col-md-3" id="debtTotal"> <h1>Debt</h1> <br> <h3>Test</h3> </div>
+        </div>
+    </div>
+    <div id="transactionForm">
+        <form>
+            <label for="date">Date:</label>
+            <input ng-model="date" id="date" type="date" name="date">
+            <label for="location">Location:</label>
+            <input ng-model="location" id="location" type ="text" name="location">
+            <label for="category">Category:</label>
+            <input ng-model="category"  id="category" type = "text" name="category">
+            <label for= "amount"> Amount:</label>
+            <input ng-model="amount" id="amount" type ="number" name="amount">
+            <label for="transactionType">Transaction Type:</label>
+            <input ng-model="transactionType"  id="transactionType" type ="text" name="transactionType">
+            <!--submit button-->
+            <button id="transaction_submit" class="btn btn-primary" ng-click="saveNewTransaction()" type="button">Submit</button>
+        </form>
+    </div>
+    <div id ="mainTable">
+        <table ng-repeat="transactions in transaction">
+            <tr>
+                <th class="col-md-3">Date</th>
+                <th>Location</th>
+                <th>Category</th>
+                <th>Amount</th>
+                <th>Transaction Type</th>
+                <th>Delete</th>
+            </tr>
+            <tr>
+                <td>{{transaction.date}}</td>
+                <td>{{transaction.location}}</td>
+                <td>{{transaction.category}}</td>
+                <td>{{transaction.amount}}</td>
+                <td>{{transaction.transactionType}}</td>
+            </tr>
+            <tr>
+                <td><button class="btn btn-danger" ng-click="deleteTransaction(transaction.id)">Remove Transaction</button></td>
+            </tr>
+        </table>
+
+    </div>
 </div>
