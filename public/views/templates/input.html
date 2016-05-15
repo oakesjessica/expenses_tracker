@@ -84,13 +84,13 @@
             <th class = "col-lg-1 col-md-1 col-sm-1 col-xs-1">Delete</th>
         </tr>
         <tr ng-repeat = "transaction in transactions">
-            <td class = "col-lg-1 col-md-1 col-sm-1 col-xs-1"> {{date}} </td>
-            <td class = "col-lg-3 col-md-3 col-sm-3 col-xs-3"> {{location}} </td>
+            <td class = "col-lg-1 col-md-1 col-sm-1 col-xs-1"> {{transaction.displayDate}} </td>
+            <td class = "col-lg-3 col-md-3 col-sm-3 col-xs-3"> {{transaction.location}} </td>
             <td class = "col-lg-3 col-md-3 col-sm-3 col-xs-3"> {{transaction.category}} </td>
-            <td class = "col-lg-3 col-md-3 col-sm-3 col-xs-3"> {{transaction.transactionType}} </td>
+            <td class = "col-lg-3 col-md-3 col-sm-3 col-xs-3"> {{transaction.transactiontype}} </td>
             <td class = "col-lg-1 col-md-1 col-sm-1 col-xs-1"> {{transaction.amount}} </td>
 
-            <td><button class="btn btn-danger" ng-click="deleteTransaction(transaction.id)">X</button></td>
+            <td><button class="btn btn-danger" ng-click="deleteTransaction(transaction)">X</button></td>
         </tr>
     </table>
 </div>
