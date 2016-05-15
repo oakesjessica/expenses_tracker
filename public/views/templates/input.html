@@ -61,7 +61,49 @@
       <div class= "gridControl">
         <label for = "amount"> Amount:</label>
         <input id="amount" ng-model ="amount" type ="number" name = "amount" min="0">
+
       </div>
+</div>
+
+<div class= "gridControl">
+        <label for = "transactionType">Transaction Tpye </label>
+            <!--<div class="dropdown">-->
+                <!--<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Transaction Type-->
+                    <!--<span class="caret"></span></button>-->
+                <!--<ul class="dropdown-menu">-->
+                    <!--<li><a href="#">Cash</a></li>-->
+                    <!--<li><a href="#">Credit</a></li>-->
+                    <!--<li><a href="#">Check</a></li>-->
+                <!--</ul>-->
+            <!--</div>-->
+
+            <div class="btn-group">
+                <a ui-turn-on='myDropdown' class='btn'>Transaction Type:</a>
+
+            <!--<div class="btn-group dropdown-toggle">-->
+
+                <ul
+                        class="dropdown-menu"
+                        ui-outer-click="Ui.turnOff('myDropdown')"
+                        ui-outer-click-if="Ui.active('myDropdown')"
+                        role="menu"
+                        ui-show="myDropdown"
+                        ui-state="myDropdown"
+                        ui-turn-off="myDropdown">
+
+                    <li><a>Cash</a></li>
+                    <li><a>Credit</a></li>
+                    <li><a>Check</a></li>
+                </ul>
+            </div>
+            <!--<select name="transactionType">-->
+            <!--<option value="cash">Cash</option>-->
+            <!--<option value="credit">Credit</option>-->
+            <!--<option value="check">Check</option>-->
+            <!--</select>-->
+
+        <!-- <input id="transactionType" ng-model ="transactionType" type ="text" name = "transactionType">
+      </div> -->
 
       <div class= "gridControl">
         <label for = "transactionType">Transaction Type </label>
