@@ -1,7 +1,7 @@
-<div class="mainContainer">>
+<div class="mainContainer">
 <div id = "container">
       <div class = "row">
-          <div class = "col-lg-3 col-md-3 col-sm-3">
+          <div class = "green col-lg-3 col-md-3 col-sm-3">
       			<div class = "row">
       					<div class = "headerOne">Savings
                     <div class="row">
@@ -10,7 +10,7 @@
                </div>
             </div>
       </div>
-      <div class = "col-lg-3 col-md-3 col-sm-3">
+      <div class = "green col-lg-3 col-md-3 col-sm-3">
         <div class = "row">
             <div class = "headerOne">Checking
                 <div class="row">
@@ -19,7 +19,7 @@
            </div>
         </div>
           </div>
-          <div class = "col-lg-3 col-md-3 col-sm-3">
+          <div class = "green col-lg-3 col-md-3 col-sm-3">
             <div class = "row">
                 <div class = "headerOne">Cash
                     <div class="row">
@@ -28,7 +28,7 @@
                </div>
             </div>
         </div>
-        <div class = "col-lg-3 col-md-3 col-sm-3">
+        <div class = "red col-lg-3 col-md-3 col-sm-3">
           <div class = "row">
               <div class = "headerOne">Debt
                   <div class="row">
@@ -41,7 +41,7 @@
 </div>
 
 
-<div id ="transactionForm" class="form-group">
+<div id ="transactionForm" class="form-group text-center">
     <form ng-submit="saveNewTransaction()">
       <div class= "gridControl">
         <label for="date">Date:</label>
@@ -66,11 +66,11 @@
         <label for = "transactionType">Transaction Type </label>
         <input id="transactionType" ng-model ="transactionType" type ="text" name = "transactionType">
       </div>
-      <button id="transaction_submit" class="btn btn-sm btn-primary" type="submit">Submit</button>
+      <button id="transaction_submit" class="btn btn-sm btn-primary submitBtn" type="submit">Submit</button>
     </form>
 </div>
 
-<!-- <div id ="mainTable"> -->
+<div id ="mainTable">
 <table class = "table table-responsive table-striped">
     <thead>
         <tr>
@@ -79,7 +79,7 @@
             <th class = "col-lg-3 col-md-3 col-sm-3 col-xs-3">Category</th>
             <th class = "col-lg-3 col-md-3 col-sm-3 col-xs-3">Transaction Type</th>
             <th class = "col-lg-1 col-md-1 col-sm-1 col-xs-1">Amount</th>
-            <th class = "col-lg-1 col-md-1 col-sm-1 col-xs-1">Delete</th>
+            <th class = "col-lg-1 col-md-1 col-sm-1 col-xs-1 text-center">Delete</th>
         </tr>
     </thead>
     <tbody>
@@ -88,10 +88,11 @@
             <td class = "col-lg-3 col-md-3 col-sm-3 col-xs-3"> {{transaction.location}} </td>
             <td class = "col-lg-3 col-md-3 col-sm-3 col-xs-3"> {{transaction.category}} </td>
             <td class = "col-lg-3 col-md-3 col-sm-3 col-xs-3"> {{transaction.transactiontype}} </td>
-            <td class = "col-lg-1 col-md-1 col-sm-1 col-xs-1"> {{transaction.amount}} </td>
+            <td class = "col-lg-1 col-md-1 col-sm-1 col-xs-1"> ${{transaction.amount}} </td>
 
-            <td><button class="btn btn-xs btn-danger" ng-click="deleteTransaction(transaction)">X</button></td>
+            <td class="text-center"><button class="btn btn-xs btn-danger deleteBtn" ng-click="deleteTransaction(transaction)">X</button></td>
         </tr>
     </tbody>
 </table>
+</div>
 </div>

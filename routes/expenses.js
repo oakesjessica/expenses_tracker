@@ -14,7 +14,8 @@ router.get('/', function(req, res) {
       "savings.savings, cash.cash, checking.checking, debt.total AS debt " +
       "FROM cash, checking, credit, debt, loans, savings, transactions AS t " +
       "JOIN user_categories AS uc ON t.category_id = uc.id " +
-      "JOIN transaction_type AS tt ON t.t_type_id = tt.id WHERE t.user_id = $1;", [userID], function(err, result) {
+      "JOIN transaction_type AS tt ON t.t_type_id = tt.id WHERE t.user_id = $1 " +
+      "ORDER BY t.dates ASC;", [userID], function(err, result) {
         if (err) {
           console.log("Retrieving data !ERROR!", err);
           res.status(500).send(err);
@@ -72,7 +73,7 @@ router.post("/", function(req, res) {
                   res.status(500).send(err);
                   process.exit(1);
                 } else {
-                  if (transactionType === "income" || transactionType === "checking gift (income)") {
+                  if (transactionType === "income" || transactionType === "checking gift") {
                     addToChecking(req.body.amount, userID);
                   } else if (transactionType === "cash expense") {
                     subFromCash(req.body.amount, userID);
@@ -102,7 +103,7 @@ router.post("/", function(req, res) {
                     depositIntoChecking(req.body.amount, userID);
                   } else if (transactionType === "cash withdrawal from checking") {
                     withdrawCash(req.body.amount, userID);
-                  } else if (transactionType === "cash check" || reqCategory === "cash gift (income)") {
+                  } else if (transactionType === "cash check" || reqCategory === "cash gift") {
                     cashACheck(req.body.amount, userID);
                   } //  else ifs
                 } //  else

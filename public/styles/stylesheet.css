@@ -1,16 +1,41 @@
+@import url(https://fonts.googleapis.com/css?family=Montserrat:700);
+
+html {
+  background-color: #ebe8cd;
+}
+
 body {
   overflow: scroll;
+  background-color: #ebe8cd;
 }
 
 table, th, td {
-    border: 2px solid black;
+    border: 1px solid black;
     border-collapse: collapse;
 }
+tbody>tr:nth-child(even) {
+  background-color: #b4e1dd;
+}
+
+tbody>tr:nth-child(odd) {
+  background-color: blue;
+}
+
+thead {
+  border-bottom: 2px solid black;
+  background-color: #069b90;
+}
+
 th, td {
     padding: 5px;
     text-align: left;
-
 }
+
+.headTitle {
+  padding: 20px;
+  font-family: "Montserrat";
+}
+
 #pageContainer {
   padding: 20px;
 }
@@ -28,6 +53,43 @@ border: 1px solid black;
 .headerTwo {
   font-size: 20px;
 }
+.green {
+  background-color: #069b90;
+  border: 1px solid black;
+}
+
+.red {
+  /*background-color: #b95058;*/
+  background-color: #069b90;
+  border: 1px solid black;
+}
+
 .gridControl {
   display: inline-block;
+}
+
+.submitBtn {
+  background-color: #069b90;
+  border: #069b90;
+}
+
+.submitBtn:hover {
+  background-color: #046c64;
+}
+
+.submitBtn:active {
+  background-color: #069b90;
+}
+
+.deleteBtn {
+  background-color: #b95058;
+  border: #b95058;
+}
+
+.deleteBtn:hover {
+  background-color: #6c040b;
+}
+
+.deleteBtn:active {
+  background-color: #b95058;
 }
